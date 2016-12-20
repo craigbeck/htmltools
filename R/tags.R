@@ -1394,15 +1394,16 @@ validateCssUnit <- function(x) {
 
   # if the input is a character vector consisting only of digits (e.g. "960"),
   # coerce it to a numeric value
-  if (is.character(x) && nchar(x) > 0 && gsub("\\d*", "", x) == "")
+  if (is.character(x) && nchar(x) > 0 && gsub("\\d*(\\.\\d*)", "", x) == "")
     x <- as.numeric(x)
 
   pattern <-
-    "^(auto|inherit|((\\.\\d+)|(\\d+(\\.\\d+)?))(%|in|cm|mm|em|ex|pt|pc|px|vh|vw|vmin|vmax))$"
+    "^(auto|inherit|(((\\.\\d+)|(\\d+(\\.\\d+)?))(%|in|cm|mm|em|ex|pt|pc|px|vh|vw|vmin|vmax))|calc\\(\\d+(\\.\\d+)?(vh|vw)\\s*[+-]\\s*(\\d+(\\.\\d+)?(in|cm|mm|em|ex|pt|pc|px)\\)))$"
+  # "^(auto|inherit|((\\.\\d+)|(\\d+(\\.\\d+)?))(%|in|cm|mm|em|ex|pt|pc|px|vh|vw|vmin|vmax))$"
 
   if (is.character(x) &&
       !grepl(pattern, x)) {
-    stop('"', x, '" is not a valid CSS unit (e.g., "100%", "400px", "auto")')
+    stop('"', x, '" is not a valid CSS unit (e.g., "100%", "400px", "auto", "calc(100vh - 73px)")')
   } else if (is.numeric(x)) {
     x <- paste(x, "px", sep = "")
   }

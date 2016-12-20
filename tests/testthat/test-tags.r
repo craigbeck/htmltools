@@ -685,3 +685,21 @@ test_that("Printing tags works", {
     '<a href="#">link</a>'
   )
 })
+
+test_that("Validating CSS units works", {
+  expect_error(validateCssUnit(""))
+  expect_error(validateCssUnit("foo"))
+
+  expect_identical(validateCssUnit("auto"), "auto")
+  expect_identical(validateCssUnit("inherit"), "inherit")
+  expect_identical(validateCssUnit(100), "100px")
+  expect_identical(validateCssUnit(85.5), "85.5px")
+
+  units <- c("%","in","cm","mm","em","ex","pt","pc","px","vh","vw","vmin","vmax")
+  for (unit in units) {
+    value <- paste0("37", unit)
+    expect_identical(validateCssUnit(value), value)
+  }
+
+  expect_identical(validateCssUnit("calc(100vh - 73px)"), "calc(100vh - 73px)")
+})
